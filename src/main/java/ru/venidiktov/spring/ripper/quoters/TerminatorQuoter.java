@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.venidiktov.spring.ripper.profiling.Profiling;
 
 /**
  * !Помним что для XmlBeanDefinitionReader когда мы пишем конфигурация в xml у бина для установки ему полей у этих полей должны быть
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Setter
 @Component
+@Profiling
 public class TerminatorQuoter implements Quoter {
     @Value("${message.terminator}")
     private String message;

@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Не забыть для своих аннотаций выбрать Retention = RUNTIME,
  * чтоб наша аннотация была видна в runtime и мы могли ее считать черерз reflection (Если надо конечно)
+ * Аннотация говорит внедрить в поле рандомное значение
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InjectRandomInt {
