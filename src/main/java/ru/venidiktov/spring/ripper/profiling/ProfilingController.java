@@ -14,7 +14,7 @@ package ru.venidiktov.spring.ripper.profiling;
  */
 //    @Component // В каких то случаях его можно регистрировать как бин тогда для всего приложения будет 1 рубильник
 public class ProfilingController implements ProfilingControllerMBean {
-    private boolean enabled;
+    private boolean enabled = true;
 
     @Override
     public void setEnabled(boolean enabled) {

@@ -50,6 +50,7 @@ public class ProfilingHandlerBeanPostProcessor implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         var beanClass = profilingClass.get(beanName);
         if (beanClass != null) {
+            log.info("Фаза 5, после PostConstruc метода, мы в методе postProcessAfterInitialization BPP");
             /**
              * Класс Proxy есть с 1999 года
              * Метод newProxyInstance() - создает объект из нового класса который он сам сгенерит на лету

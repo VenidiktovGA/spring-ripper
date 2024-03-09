@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.venidiktov.spring.ripper.listener.PostProxy;
 import ru.venidiktov.spring.ripper.profiling.Profiling;
 
 /**
@@ -37,10 +38,11 @@ public class TerminatorQuoter implements Quoter {
     @PostConstruct
     public void init() {
         log.info("Фаза 4 после BPP postProcessBeforeInitialization но до postProcessAfterInitialization!");
-        log.info("Поле repeat = {}, ну мы его и трогали", repeat);
+        log.info("Поле repeat = {}, ну мы его и не трогали", repeat);
     }
 
     @Override
+    @PostProxy
     public void sayQuote() {
         for (int i = 0; i < repeat; i++) {
             log.info("message = {}", message);
