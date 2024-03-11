@@ -17,6 +17,13 @@ import ru.venidiktov.spring.ripper.profiling.Profiling;
 @Setter
 @Component
 @Profiling
+/**
+ * @DeprecatedClass(newImpl = T1000.class)
+ * В DeprecationHandlerBeanFactoryPostProcessor у BeanDefinition для класса TerminatorQuoter меняем
+ * поле beanClass на ru.venidiktov.spring.ripper.quoters.T1000 и поэтому вместо него будет создан бин типа T1000
+ * !!! Поэтому метод sayQuote() будет вызван для T1000!
+ */
+@DeprecatedClass(newImpl = T1000.class)
 public class TerminatorQuoter implements Quoter {
     @Value("${message.terminator}")
     private String message;
@@ -25,19 +32,19 @@ public class TerminatorQuoter implements Quoter {
     private int repeat;
 
     public TerminatorQuoter() {
-        log.info("Фаза 1 до вызова методов BPP и init метода!"); // Тут мы не видим значений которые добавляются в BPP postProcessBeforeInitialization()
+        log.info("Фаза 1, конструктор, до вызова методов BPP и init метода!"); // Тут мы не видим значений которые добавляются в BPP postProcessBeforeInitialization()
         log.info("Поле repeat = {} еще не инициализировано так как конструктор отрабатывает до метода postProcessBeforeInitialization", repeat);
     }
 
     public void setRepeat(int repeat) {
-        log.info("Фаза 2, после вызова конструктора но до вызова методов BPP и init метода!");
+        log.info("Фаза 2, сеттер, после вызова конструктора но до вызова методов BPP и init метода!");
         this.repeat = repeat;
         log.info("Поле repeat = {}, установили поле", repeat);
     }
 
     @PostConstruct
     public void init() {
-        log.info("Фаза 4 после BPP postProcessBeforeInitialization но до postProcessAfterInitialization!");
+        log.info("Фаза 4, PostConstruct, после BPP postProcessBeforeInitialization но до postProcessAfterInitialization!");
         log.info("Поле repeat = {}, ну мы его и не трогали", repeat);
     }
 
