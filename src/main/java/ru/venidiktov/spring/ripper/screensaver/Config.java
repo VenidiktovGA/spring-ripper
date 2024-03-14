@@ -33,6 +33,7 @@ public class Config {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Color color() {
+        log.info("Обращение к определению  color");
         Random random = new Random();
         return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     }
@@ -45,11 +46,13 @@ public class Config {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public ColorForFrameImpl colorForFrameImpl() {
+        log.info("Обращение к определению  colorForFrameImpl");
         return new ColorForFrameImpl();
     }
 
     @Bean
     public ColorFrameGood colorFrameGood() {
+        log.info("Обращение к определению  colorFrameGood");
         return new ColorFrameGood() {
             @Override
             protected Color getColor() {
@@ -59,13 +62,42 @@ public class Config {
         };
     }
 
+    /**
+     * Если у нас тоит задача обновлять цвет окна каждые 3 секунды, в не зависимости сколько раз в этот промежуток запросили бин
+     * (иначе при каждом запросе будет меняться бин), мы решим задачу через создание своего собственного Scope,
+     * наш Scope сам решает конда создать новый бин
+     */
+    @Bean
+    @Scope(value = "periodical")
+    public Color colorForCustomScope() {
+        log.info("Обращение к определению  colorForCustomScope");
+        Random random = new Random();
+        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+    }
+
+    @Bean
+    public ColorFrameForCustomScope colorFrameForCustomScope() {
+        log.info("Обращение к определению  colorFrameForCustomScope");
+        return new ColorFrameForCustomScope() {
+            @Override
+            protected Color getColor() {
+                log.info("Запрашиваем бин colorForCustomScope");
+                return colorForCustomScope(); // Обращаемся к определению бина, его созданием и обновлением управляет наш Scope!
+            }
+        };
+    }
+
     public static void main(String[] args) throws InterruptedException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
         while (true) {
             // Внедряем prototype бин через Proxy, даже в рамках одного метода два обращения к бину создадут два бина
 //            context.getBean(ColorFrame.class).showOnRandomPlace(); // Для проверки подхода с proxyMode = ScopedProxyMode.TARGET_CLASS
+
             // Внедряем prototype бин через вызов определения бина в методе переопределенном от абстрактного класса
-            context.getBean(ColorFrameGood.class).showOnRandomPlace(); // Для проверки подхода с абстрактным методом и классом
+//            context.getBean(ColorFrameGood.class).showOnRandomPlace(); // Для проверки подхода с абстрактным методом и классом
+
+            // Внедряем prototype бин через свой Scope, наш Scope сам решает когда пора создать новый бин класса
+            context.getBean(ColorFrameForCustomScope.class).showOnRandomPlace(); // Для проверки подхода со своим Scope
             Thread.sleep(1000);
         }
     }
